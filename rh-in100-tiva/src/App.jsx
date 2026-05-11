@@ -25,7 +25,8 @@ export default function App() {
       setIsLoading(true)
 
       /*const response = await api.get('/api/task/all')
-       console.log(response.data)*/
+      setFoundTasks(response.data.foundTasks) 
+      console.log(response.data)*/
     } catch (error) {
       console.log(error)
       setIsLoading(false)
