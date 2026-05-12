@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import TaskDetailsModal from "./components/modals/task-details-modal"
 import EmptyTask from "./components/empty-task"
+import PaginationTask from "./components/pagination-task"
 import { useState, useEffect } from "react"
 import api from "./services/apiInstance"
 
@@ -163,6 +164,13 @@ export default function App() {
 
               </div>
             </ScrollArea>
+
+            <PaginationTask
+              totalTasks={foundTasks.data.length}
+              page={foundTasks.pagination.page}
+              limit={foundTasks.pagination.limit}
+              setPagination={setFoundTasks}
+            />
 
           </CardContent>
         </Card>
