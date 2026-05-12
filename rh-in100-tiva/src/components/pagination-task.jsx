@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/pagination"
 
 
-export default function PaginationTask({ totalTasks, page, limit }) {
+export default function PaginationTask({ totalPages, page, limit, setPagination }) {
     return (
         <Pagination>
             <PaginationContent>

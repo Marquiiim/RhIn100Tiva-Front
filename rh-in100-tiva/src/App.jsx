@@ -23,7 +23,8 @@ export default function App() {
     refresh: 0,
     pagination: {
       page: 1,
-      limit: 5
+      limit: 5,
+      totalPages: 0
     }
   })
   const [isLoading, setIsLoading] = useState(false)
@@ -41,6 +42,7 @@ export default function App() {
       setFoundTasks(prev => ({
         ...prev,
         data: response.data.found,
+        pagination: { ...prev.pagination, totalPages: response.data.totalPages }
       }))
     } catch (error) {
       console.log(error)
@@ -166,7 +168,7 @@ export default function App() {
             </ScrollArea>
 
             <PaginationTask
-              totalTasks={foundTasks.data.length}
+              totalPages={foundTasks.pagination.totalPages}
               page={foundTasks.pagination.page}
               limit={foundTasks.pagination.limit}
               setPagination={setFoundTasks}
