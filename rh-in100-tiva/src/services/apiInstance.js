@@ -2,31 +2,35 @@ import axios from "axios"
 import { toast } from "sonner";
 
 const api = axios.create({
-    baseURL: '',
+    baseURL: 'http://localhost:5000',
+    timeout: 10000
 })
 
 api.interceptors.request.use(
     config => {
         console.log('URL completa:', `${config.baseURL}${config.url}`);
         console.log('Método:', config.method?.toUpperCase());
+        return config
     },
     error => Promise.reject(error)
 )
 
 api.interceptors.response.use(
     response => {
-        const message = response.data?.message
-
-        if (message) toast.success(message)
+        if (response.data?.message) toast.success(response.data.message)
 
         return response
     },
 
     error => {
-        const errorData = error.response?.data
-        const errorMessage = errorData.message || 'Erro na requisição'
-
-        toast.error(errorMessage)
+        if (error.response) {
+            toast.error(error.response?.data.message)
+        } else if (error.request) {
+            toast.error('Não foi possível conectar ao servidor')
+        } else {
+            toast.error(error.message)
+        }
+        return Promise.reject(error)
     }
 )
 

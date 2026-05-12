@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Loader2 } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import TaskDetailsModal from "./components/modals/task-details-modal"
-import EmptyTask from "./components/modals/empty-task"
+import EmptyTask from "./components/empty-task"
 import { useState, useEffect } from "react"
 import api from "./services/apiInstance"
 
@@ -17,16 +17,30 @@ export default function App() {
     show: false,
     taskId: null
   })
-  const [foundTasks, setFoundTasks] = useState([])
+  const [foundTasks, setFoundTasks] = useState({
+    data: null,
+    refresh: 0,
+    pagination: {
+      page: 1,
+      limit: 5
+    }
+  })
   const [isLoading, setIsLoading] = useState(false)
 
   const fetchAllTasks = async () => {
     try {
       setIsLoading(true)
 
-      /*const response = await api.get('/api/task/all')
-      setFoundTasks(response.data.foundTasks) 
-      console.log(response.data)*/
+      const response = await api.get('/api/task/all', {
+        params: {
+          page: foundTasks.pagination.page,
+          limit: foundTasks.pagination.limit
+        }
+      })
+      setFoundTasks(prev => ({
+        ...prev,
+        data: response.data.found,
+      }))
     } catch (error) {
       console.log(error)
       setIsLoading(false)
@@ -35,22 +49,27 @@ export default function App() {
     }
   }
 
-  const handleAddTask = async () => {
+  const handleAddTask = async (e) => {
+    e.preventDefault()
     if (!task.trim()) return
     try {
       setIsLoading(true)
-
-      /*const response = await api.post('/api/task/add', task)
-       console.log(response.data)*/
+      await api.post('/api/task/add', { task })
+      setTask('')
+      setFoundTasks(prev => ({
+        ...prev,
+        refresh: prev.refresh + 1,
+      }))
     } catch (error) {
       console.log(error)
       setIsLoading(false)
     } finally {
       setIsLoading(false)
+      setTask('')
     }
   }
 
-  const toggleTaskStatus = async () => {
+  const toggleTaskStatus = async (id) => {
     try {
       setIsLoading(true)
 
@@ -64,7 +83,7 @@ export default function App() {
     }
   }
 
-  const handleDeleteTask = async () => {
+  const handleDeleteTask = async (id) => {
     try {
       setIsLoading(true)
       // const response = await api.delete('/api/task/delete', task)
@@ -78,12 +97,12 @@ export default function App() {
 
   useEffect(() => {
     fetchAllTasks()
-  }, [])
+  }, [foundTasks.refresh])
 
   return (
     <>
       <form className='min-h-screen flex items-center justify-center'
-        onSubmit={handleAddTask}
+        onSubmit={(e) => handleAddTask(e)}
       >
         <Card className='w-full max-w-md'>
 
@@ -115,29 +134,31 @@ export default function App() {
             <ScrollArea className='h-[350px]'>
               <div className='space-y-3'>
 
-                {!foundTasks || foundTasks.length === 0 ? (
+                {!foundTasks.data || foundTasks.data.length === 0 ? (
                   <EmptyTask />
                 ) : (
-                  <div className='flex items-center justify-between gap-3 p-2 rounded-lg hover:bg-accent transition-colors'>
-                    <div className='flex items-center gap-3'>
-                      <Checkbox onClick={() => toggleTaskStatus(null)} />
-                      <Label className='text-sm font-medium'>
-                        Task 1
-                      </Label>
-                    </div>
-                    <div className='flex items-center gap-3'>
-                      <Button
-                        onClick={() => setModal({ show: true, id: null })}
-                        variant='outline'>
-                        Visualizar
-                      </Button>
-                      <Button
-                        onClick={() => handleDeleteTask(null)}
-                        variant='destructive'>
-                        Excluir
-                      </Button>
-                    </div>
-                  </div>
+                  foundTasks.data.map((task) =>
+                    <div key={task.id}
+                      className='flex items-center justify-between gap-3 p-2 rounded-lg hover:bg-accent transition-colors'>
+                      <div className='flex items-center gap-3'>
+                        <Checkbox onClick={() => toggleTaskStatus(null)} />
+                        <Label className='text-sm font-medium'>
+                          {task.name}
+                        </Label>
+                      </div>
+                      <div className='flex items-center gap-3'>
+                        <Button
+                          onClick={() => setModal({ show: true, id: task.id })}
+                          variant='outline'>
+                          Visualizar
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteTask(task.id)}
+                          variant='destructive'>
+                          Excluir
+                        </Button>
+                      </div>
+                    </div>)
                 )}
 
               </div>

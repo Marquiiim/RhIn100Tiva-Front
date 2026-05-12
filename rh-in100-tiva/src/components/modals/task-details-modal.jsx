@@ -32,7 +32,6 @@ export default function TaskDetailsModal({ id, onClose }) {
         if (!task.trim()) return
         try {
             setIsLoading(true)
-
             /*const response = await api.patch('/api/task/:id')
              console.log(response.data)*/
             onClose()
