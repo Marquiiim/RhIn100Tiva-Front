@@ -10,26 +10,43 @@ import {
 
 
 export default function PaginationTask({ totalPages, page, limit, setPagination }) {
+
+    console.log('Pagination Debug:', { totalPages, page })
+
+    const handlePageChange = (newPage) => {
+        if (newPage < 1 || newPage > totalPages) return
+
+        setPagination(prev => ({
+            ...prev,
+            pagination: {
+                ...prev.pagination,
+                page: newPage
+            }
+        }))
+    }
+
+    if (totalPages <= 1) return null
+
     return (
         <Pagination>
             <PaginationContent>
                 <PaginationItem>
-                    <PaginationPrevious href="#" />
+                    <PaginationPrevious onClick={() => handlePageChange(page - 1)}
+                        className={page === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                        disabled={page === 1} />
                 </PaginationItem>
+
                 <PaginationItem>
-                    <PaginationLink href="#">1</PaginationLink>
+                    <PaginationLink isActive>
+                        {page}
+                    </PaginationLink>
                 </PaginationItem>
+
+
                 <PaginationItem>
-                    <PaginationLink href="#" isActive>2</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                    <PaginationLink href="#">3</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                    <PaginationEllipsis />
-                </PaginationItem>
-                <PaginationItem>
-                    <PaginationNext href="#" />
+                    <PaginationNext onClick={() => handlePageChange(page + 1)}
+                        className={page === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                        disabled={page === totalPages} />
                 </PaginationItem>
             </PaginationContent>
         </Pagination>

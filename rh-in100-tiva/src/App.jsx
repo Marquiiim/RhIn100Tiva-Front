@@ -72,6 +72,10 @@ export default function App() {
   const toggleTaskStatus = async (id) => {
     try {
       await api.patch('/api/task/change/status', { id })
+      setFoundTasks(prev => ({
+        ...prev,
+        refresh: prev.refresh + 1,
+      }))
     } catch (error) {
       console.log(error)
     }
@@ -141,10 +145,15 @@ export default function App() {
                 ) : (
                   foundTasks.data.map((task) => (
                     <div key={task.id}
-                      className='flex items-center justify-between gap-2 p-2 rounded-lg border hover:bg-accent transition-colors'>
+                      className={`flex items-center justify-between gap-2 p-2 rounded-lg border transition-colors ${task.isComplete
+                        ? 'bg-green-100 dark:bg-green-900/30 border-green-200 dark:border-green-800'
+                        : 'hover:bg-accent'
+                        }`}>
                       <div className='flex items-center gap-2 flex-1 min-w-0'>
-                        <Checkbox onClick={() => toggleTaskStatus(task.id)} />
-                        <Label className='text-sm font-medium truncate'>
+                        <Checkbox
+                          checked={task.isComplete}
+                          onClick={() => toggleTaskStatus(task.id)} />
+                        <Label className={`text-sm font-medium truncate ${task.isComplete === 1 ? 'line-through' : ''}`}>
                           {task.name}
                         </Label>
                       </div>
@@ -169,7 +178,7 @@ export default function App() {
             </ScrollArea>
 
             <PaginationTask
-              totalPages={foundTasks.pagination.totalPages}
+              totalPages={foundTasks.pagination.totalPages.totalPages}
               page={foundTasks.pagination.page}
               limit={foundTasks.pagination.limit}
               setPagination={setFoundTasks}
