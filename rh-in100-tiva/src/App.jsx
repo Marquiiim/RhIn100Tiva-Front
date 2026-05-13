@@ -27,7 +27,7 @@ export default function App() {
     refresh: 0,
     pagination: {
       page: 1,
-      limit: 5,
+      limit: 4,
       totalPages: 0
     }
   })
@@ -54,44 +54,36 @@ export default function App() {
   const handleAddTask = async (e) => {
     e.preventDefault()
     if (!task.name.trim()) return
+
+    setIsLoading(true)
     try {
-      setIsLoading(true)
       await api.post('/api/task/add', { task })
       setTask({ name: '', description: '' })
-      setFoundTasks(prev => ({
-        ...prev,
-        refresh: prev.refresh + 1,
-      }))
     } catch (error) {
       console.log(error)
     } finally {
       setIsLoading(false)
+      setFoundTasks(prev => ({ ...prev, refresh: prev.refresh + 1 }))
     }
   }
 
   const toggleTaskStatus = async (id) => {
     try {
       await api.patch('/api/task/change/status', { id })
-      setFoundTasks(prev => ({
-        ...prev,
-        refresh: prev.refresh + 1,
-      }))
     } catch (error) {
       console.log(error)
+    } finally {
+      setFoundTasks(prev => ({ ...prev, refresh: prev.refresh + 1 }))
     }
   }
 
   const handleDeleteTask = async (id) => {
     try {
-      await api.delete('/api/task/delete', {
-        params: { id }
-      })
-      setFoundTasks(prev => ({
-        ...prev,
-        refresh: prev.refresh + 1,
-      }))
+      await api.delete('/api/task/delete', { params: { id } })
     } catch (error) {
       console.log(error)
+    } finally {
+      setFoundTasks(prev => ({ ...prev, refresh: prev.refresh + 1 }))
     }
   }
 
@@ -178,8 +170,9 @@ export default function App() {
             </ScrollArea>
 
             <PaginationTask
-              totalPages={foundTasks.pagination.totalPages}
+              totalPages={foundTasks.pagination.totalPages.totalPages}
               page={foundTasks.pagination.page}
+              limit={foundTasks.pagination.limit}
               setPagination={setFoundTasks}
             />
 
