@@ -9,10 +9,7 @@ import {
 } from "@/components/ui/pagination"
 
 
-export default function PaginationTask({ totalPages, page, limit, setPagination }) {
-
-    console.log('Pagination Debug:', { totalPages, page })
-
+export default function PaginationTask({ totalPages, page, setPagination }) {
     const handlePageChange = (newPage) => {
         if (newPage < 1 || newPage > totalPages) return
 

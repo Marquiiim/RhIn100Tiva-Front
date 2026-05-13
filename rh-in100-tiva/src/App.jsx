@@ -180,7 +180,6 @@ export default function App() {
             <PaginationTask
               totalPages={foundTasks.pagination.totalPages}
               page={foundTasks.pagination.page}
-              limit={foundTasks.pagination.limit}
               setPagination={setFoundTasks}
             />
 
