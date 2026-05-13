@@ -11,9 +11,13 @@ import EmptyTask from "./components/empty-task"
 import PaginationTask from "./components/pagination-task"
 import { useState, useEffect } from "react"
 import api from "./services/apiInstance"
+import { Textarea } from "./components/ui/textarea"
 
 export default function App() {
-  const [task, setTask] = useState('')
+  const [task, setTask] = useState({
+    name: '',
+    description: ''
+  })
   const [modal, setModal] = useState({
     show: false,
     taskId: null
@@ -31,8 +35,6 @@ export default function App() {
 
   const fetchAllTasks = async () => {
     try {
-      setIsLoading(true)
-
       const response = await api.get('/api/task/all', {
         params: {
           page: foundTasks.pagination.page,
@@ -46,55 +48,46 @@ export default function App() {
       }))
     } catch (error) {
       console.log(error)
-      setIsLoading(false)
-    } finally {
-      setIsLoading(false)
     }
   }
 
   const handleAddTask = async (e) => {
     e.preventDefault()
-    if (!task.trim()) return
+    if (!task.name.trim()) return
     try {
       setIsLoading(true)
       await api.post('/api/task/add', { task })
-      setTask('')
+      setTask({ name: '', description: '' })
       setFoundTasks(prev => ({
         ...prev,
         refresh: prev.refresh + 1,
       }))
     } catch (error) {
       console.log(error)
-      setIsLoading(false)
     } finally {
       setIsLoading(false)
-      setTask('')
     }
   }
 
   const toggleTaskStatus = async (id) => {
     try {
-      setIsLoading(true)
-
-      /*const response = await api.patch('/api/task/status', task)
-       console.log(response.data)*/
+      await api.patch('/api/task/change/status', { id })
     } catch (error) {
       console.log(error)
-      setIsLoading(false)
-    } finally {
-      setIsLoading(false)
     }
   }
 
   const handleDeleteTask = async (id) => {
     try {
-      setIsLoading(true)
-      // const response = await api.delete('/api/task/delete', task)
-      // console.log(response.data)
+      await api.delete('/api/task/delete', {
+        params: { id }
+      })
+      setFoundTasks(prev => ({
+        ...prev,
+        refresh: prev.refresh + 1,
+      }))
     } catch (error) {
       console.log(error)
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -104,29 +97,36 @@ export default function App() {
 
   return (
     <>
-      <form className='min-h-screen flex items-center justify-center'
-        onSubmit={(e) => handleAddTask(e)}
+      <form className='min-h-screen flex items-center justify-center p-4'
+        onSubmit={handleAddTask}
       >
         <Card className='w-full max-w-md'>
-
           <CardHeader>
-            <CardTitle className='text-2x1 font-bold'>
+            <CardTitle className='text-xl font-bold'>
               Minhas Tarefas
             </CardTitle>
           </CardHeader>
 
           <CardContent className='space-y-4'>
-            <div className='flex gap-2'>
+            <div className='space-y-3'>
               <Input
-                value={task}
-                onChange={(e) => setTask(e.target.value)}
-                className='flex-1'
-                placeholder='Adicionar nova tarefa'
+                value={task.name}
+                onChange={(e) => setTask(prev => ({ ...prev, name: e.target.value }))}
+                placeholder='Nome da tarefa'
                 required
               />
+
+              <Textarea
+                value={task.description}
+                onChange={(e) => setTask(prev => ({ ...prev, description: e.target.value }))}
+                placeholder='Descrição (opcional)'
+                className='min-h-[70px] resize-none'
+              />
+
               <Button
                 disabled={isLoading}
-                type='submit'>
+                type='submit'
+                className='w-full'>
                 {isLoading && (
                   <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                 )}
@@ -134,36 +134,37 @@ export default function App() {
               </Button>
             </div>
 
-            <ScrollArea className='h-[350px]'>
-              <div className='space-y-3'>
-
+            <ScrollArea className='h-[250px]'>
+              <div className='space-y-2'>
                 {!foundTasks.data || foundTasks.data.length === 0 ? (
                   <EmptyTask />
                 ) : (
-                  foundTasks.data.map((task) =>
+                  foundTasks.data.map((task) => (
                     <div key={task.id}
-                      className='flex items-center justify-between gap-3 p-2 rounded-lg hover:bg-accent transition-colors'>
-                      <div className='flex items-center gap-3'>
-                        <Checkbox onClick={() => toggleTaskStatus(null)} />
-                        <Label className='text-sm font-medium'>
+                      className='flex items-center justify-between gap-2 p-2 rounded-lg border hover:bg-accent transition-colors'>
+                      <div className='flex items-center gap-2 flex-1 min-w-0'>
+                        <Checkbox onClick={() => toggleTaskStatus(task.id)} />
+                        <Label className='text-sm font-medium truncate'>
                           {task.name}
                         </Label>
                       </div>
-                      <div className='flex items-center gap-3'>
+                      <div className='flex items-center gap-2'>
                         <Button
-                          onClick={() => setModal({ show: true, id: task.id })}
-                          variant='outline'>
-                          Visualizar
+                          onClick={() => setModal({ show: true, taskId: task.id })}
+                          variant='outline'
+                          size='sm'>
+                          Ver
                         </Button>
                         <Button
                           onClick={() => handleDeleteTask(task.id)}
-                          variant='destructive'>
+                          variant='destructive'
+                          size='sm'>
                           Excluir
                         </Button>
                       </div>
-                    </div>)
+                    </div>
+                  ))
                 )}
-
               </div>
             </ScrollArea>
 
@@ -181,7 +182,8 @@ export default function App() {
       {modal.show &&
         <TaskDetailsModal
           id={modal.taskId}
-          onClose={() => setModal({ show: false, data: null })} />
+          refresh={() => setFoundTasks(prev => ({ ...prev, refresh: prev.refresh + 1 }))}
+          onClose={() => setModal({ show: false, taskId: null })} />
       }
 
       <Toaster richColors position='top-right' />
