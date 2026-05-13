@@ -2,7 +2,7 @@ import axios from "axios"
 import { toast } from "sonner";
 
 const api = axios.create({
-    baseURL: 'http://localhost:5000',
+    baseURL: 'https://rhin100tiva-back.onrender.com',
     timeout: 10000
 })
 

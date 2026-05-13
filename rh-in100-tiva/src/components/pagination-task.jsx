@@ -30,12 +30,12 @@ export default function PaginationTask({ totalPages, page, setPagination }) {
                 <PaginationItem>
                     <PaginationPrevious onClick={() => handlePageChange(page -= 1)}
                         className={page === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                        disabled={page === 1} />
+                        disabled={page === 1 || !page} />
                 </PaginationItem>
 
                 <PaginationItem>
                     <PaginationLink isActive>
-                        {page}
+                        {page && page || ''}
                     </PaginationLink>
                 </PaginationItem>
 
@@ -43,7 +43,7 @@ export default function PaginationTask({ totalPages, page, setPagination }) {
                 <PaginationItem>
                     <PaginationNext onClick={() => handlePageChange(page += 1)}
                         className={page === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                        disabled={page === totalPages} />
+                        disabled={page === totalPages || !page} />
                 </PaginationItem>
             </PaginationContent>
         </Pagination>
