@@ -144,14 +144,14 @@ export default function App() {
                       <div className='flex items-center gap-2 flex-1 min-w-0'>
                         <Checkbox
                           checked={task.isComplete}
-                          onClick={() => toggleTaskStatus(task.id)} />
+                          onCheckedChange={() => toggleTaskStatus(task.id)} />
                         <Label className={`text-sm font-medium truncate ${task.isComplete === 1 ? 'line-through' : ''}`}>
                           {task.name}
                         </Label>
                       </div>
                       <div className='flex items-center gap-2'>
                         <Button
-                          onCheckedChange={() => setModal({ show: true, taskId: task.id })}
+                          onClick={() => setModal({ show: true, taskId: task.id })}
                           variant='outline'
                           size='sm'>
                           Ver
