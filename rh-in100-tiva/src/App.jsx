@@ -89,7 +89,7 @@ export default function App() {
 
   useEffect(() => {
     fetchAllTasks()
-  }, [foundTasks.refresh])
+  }, [foundTasks.refresh, foundTasks.pagination.page, foundTasks.pagination.limit])
 
   return (
     <>
@@ -151,7 +151,7 @@ export default function App() {
                       </div>
                       <div className='flex items-center gap-2'>
                         <Button
-                          onClick={() => setModal({ show: true, taskId: task.id })}
+                          onCheckedChange={() => setModal({ show: true, taskId: task.id })}
                           variant='outline'
                           size='sm'>
                           Ver
