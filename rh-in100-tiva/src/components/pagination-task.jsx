@@ -9,7 +9,9 @@ import {
 
 
 export default function PaginationTask({ totalPages, page, setPagination }) {
-    const currentPage = Math.min(Math.max(page || 1, 1), totalPages)
+    const currentPage = totalPages > 0
+        ? Math.min(Math.max(page || 1, 1), totalPages)
+        : 1
 
     const handlePageChange = (newPage) => {
         if (newPage < 1 || newPage > totalPages) return
@@ -30,9 +32,9 @@ export default function PaginationTask({ totalPages, page, setPagination }) {
         <Pagination>
             <PaginationContent>
                 <PaginationItem>
-                    <PaginationPrevious onClick={() => handlePageChange(page - 1)}
-                        className={page === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                        disabled={page === 1 || !page} />
+                    <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)}
+                        className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                        disabled={currentPage === 1} />
                 </PaginationItem>
 
                 <PaginationItem>
@@ -43,9 +45,9 @@ export default function PaginationTask({ totalPages, page, setPagination }) {
 
 
                 <PaginationItem>
-                    <PaginationNext onClick={() => handlePageChange(page + 1)}
-                        className={page === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                        disabled={page === totalPages || !page} />
+                    <PaginationNext onClick={() => handlePageChange(currentPage + 1)}
+                        className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                        disabled={currentPage === totalPages} />
                 </PaginationItem>
             </PaginationContent>
         </Pagination>
