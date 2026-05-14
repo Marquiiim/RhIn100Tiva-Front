@@ -8,8 +8,6 @@ const api = axios.create({
 
 api.interceptors.request.use(
     config => {
-        console.log('URL completa:', `${config.baseURL}${config.url}`);
-        console.log('Método:', config.method?.toUpperCase());
         return config
     },
     error => Promise.reject(error)
