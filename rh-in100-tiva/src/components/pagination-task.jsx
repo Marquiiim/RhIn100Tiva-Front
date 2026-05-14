@@ -21,8 +21,7 @@ export default function PaginationTask({ totalPages, page, setPagination }) {
             pagination: {
                 ...prev.pagination,
                 page: newPage
-            },
-            refresh: prev.refresh + 1
+            }
         }))
     }
 
@@ -34,7 +33,7 @@ export default function PaginationTask({ totalPages, page, setPagination }) {
                 <PaginationItem>
                     <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)}
                         className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                        disabled={currentPage === 1} />
+                        aria-disabled={currentPage === 1} />
                 </PaginationItem>
 
                 <PaginationItem>
@@ -47,7 +46,7 @@ export default function PaginationTask({ totalPages, page, setPagination }) {
                 <PaginationItem>
                     <PaginationNext onClick={() => handlePageChange(currentPage + 1)}
                         className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                        disabled={currentPage === totalPages} />
+                        aria-disabled={currentPage === totalPages} />
                 </PaginationItem>
             </PaginationContent>
         </Pagination>
