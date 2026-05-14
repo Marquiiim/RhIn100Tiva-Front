@@ -170,7 +170,7 @@ export default function App() {
             </ScrollArea>
 
             <PaginationTask
-              totalPages={foundTasks.pagination.totalPages.totalPages}
+              totalPages={foundTasks.pagination.totalPages}
               page={foundTasks.pagination.page}
               limit={foundTasks.pagination.limit}
               setPagination={setFoundTasks}
