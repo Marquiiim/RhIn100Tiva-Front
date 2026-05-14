@@ -9,8 +9,6 @@ import {
 
 
 export default function PaginationTask({ totalPages, page, setPagination }) {
-    console.log(totalPages)
-
     const currentPage = totalPages > 0
         ? Math.min(Math.max(page || 1, 1), totalPages)
         : 1
@@ -45,7 +43,7 @@ export default function PaginationTask({ totalPages, page, setPagination }) {
 
 
                 <PaginationItem>
-                    <PaginationNext onClick={() => currentPage > totalPages && handlePageChange(currentPage + 1)}
+                    <PaginationNext onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
                         className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'} />
                 </PaginationItem>
             </PaginationContent>
