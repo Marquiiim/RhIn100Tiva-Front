@@ -9,6 +9,20 @@ import {
 
 
 export default function PaginationTask({ totalPages, page, setPagination }) {
+    const currentPage = Math.min(Math.max(page || 1, 1), totalPages)
+
+    if (currentPage !== page) {
+        setPagination(prev => ({
+            ...prev,
+            pagination: {
+                ...prev.pagination,
+                page: currentPage
+            },
+            refresh: prev.refresh + 1
+        }))
+        return null
+    }
+
     const handlePageChange = (newPage) => {
         if (newPage < 1 || newPage > totalPages) return
 
@@ -35,7 +49,7 @@ export default function PaginationTask({ totalPages, page, setPagination }) {
 
                 <PaginationItem>
                     <PaginationLink isActive>
-                        {page && page || ''}
+                        {currentPage}
                     </PaginationLink>
                 </PaginationItem>
 
