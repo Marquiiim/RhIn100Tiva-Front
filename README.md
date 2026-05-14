@@ -60,3 +60,9 @@ Componente responsável pela paginação de dados, com validação automática d
 * Produção: [https://rh-in100-tiva-front.vercel.app](https://rh-in100-tiva-front.vercel.app)
 * Preview: URLs dinâmicas geradas automaticamente a cada novo deploy
 
+---
+
+### URL do repo Backend
+
+* https://github.com/Marquiiim/RhIn100Tiva-Back
+
