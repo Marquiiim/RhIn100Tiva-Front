@@ -57,7 +57,7 @@ Componente responsável pela paginação de dados, com validação automática d
 
 ## Hospedagem
 
-* Produção: [https://rh-in100-tiva-front.vercel.app](https://rh-in100-tiva-front.vercel.app)
+* Produção: [https://rh-in100-tiva-front.vercel.app](https://rh-in100-tiva-front.vercel.app/?_vercel_share=iYHMw8vxfkm3pn6XjvzDEMovcw1VTkti)
 * Preview: URLs dinâmicas geradas automaticamente a cada novo deploy
 
 ---
